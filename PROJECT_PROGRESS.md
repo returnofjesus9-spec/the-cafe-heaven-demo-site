@@ -44,22 +44,27 @@ ROADMAP.md are done; steps 4, 8, 9 remain.
       perception plugin proves an out-of-scope action is genuinely denied
       and an in-scope event is genuinely persisted).
 
-**Not yet verified**: the sandbox this was built in has no network access,
-so `uv sync` / `pytest` have not actually been run. Every file was
-syntax-checked (`py_compile`), and the logic was written and reviewed
-carefully, but **run `uv sync --all-extras && uv run pytest` as the very
-first step of the next session** before writing new code, to confirm
-everything actually passes and to catch anything the syntax check couldn't.
+**Verified** (this session): `pytest` (35/35 passing) and the CLI have now
+actually been run, not just syntax-checked. One bug surfaced by that
+verification is fixed — see "Known Bugs" below.
 
 ## Current Task
 
-None in progress. Next session starts with the verification step above,
-then continues down the remaining Phase 0 list.
+None in progress. Next session continues down the remaining Phase 0 list
+(steps 4, 8, 9).
 
 ## Known Bugs
 
-None known — but see "Not yet verified" above; this is the first thing to
-confirm, not an assumption to carry forward.
+- [x] **Fixed**: `cli.py` — with only one `@app.command()` registered and
+  no `@app.callback()`, Typer collapsed the app into a bare single command,
+  so the documented invocation (`aipentester init-run --domain ...`)
+  actually failed with "Got unexpected extra argument(s) (init-run)"; the
+  subcommand name was silently dropped. Fixed by adding an empty
+  `@app.callback()`, which forces Typer to keep treating the app as a
+  command group. Confirmed both `aipentester init-run --domain ...`
+  (works) and bare `aipentester --domain ...` (now correctly rejected,
+  since `init-run` is required) behave as documented in README.md.
+  This will keep working as-is once Phase 1 adds more commands.
 
 ## Blockers
 
